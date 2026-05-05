@@ -1,0 +1,17 @@
+Test Case: Scenario A (Basic Mixed Workload)
+Goal: Establish a baseline of how both algorithms handle a normal mix of processes.
+
+System Setup:
+Time Quantum (RR): 4
+
+Process Inputs:
+ID   | Arrival | Burst
+----------------------
+P1   |   0     |  5
+P2   |   1     |  8
+P3   |   3     |  2
+P4   |   5     |  6
+
+Expected Observation:
+SJF will run P1 to completion. By time 5, P2, P3, and P4 will be waiting. SJF will cleverly pick P3 next (shortest burst).
+Round Robin will simply cycle through them in order, pausing the longer jobs (P2 and P4) to give everyone a turn.

@@ -1,0 +1,16 @@
+Test Case: Scenario C (Fairness / Interactivity Test)
+Goal: Prove Round Robin prevents starvation and yields a better Average Response Time.
+
+System Setup:
+Time Quantum (RR): 2
+
+Process Inputs:
+ID   | Arrival | Burst
+----------------------
+P1   |   0     |  6
+P2   |   0     |  6
+P3   |   0     |  6
+
+Expected Observation:
+SJF will force P3 to wait 12 seconds before getting any CPU time.
+Round Robin will rotate perfectly, giving every process CPU time within the first 4 seconds.

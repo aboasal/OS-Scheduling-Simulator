@@ -63,7 +63,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <!-- FIX 2: Removed the module name and slash -->
-                            <mainClass>com.example.os_project.HelloApplication</mainClass>
+                            <mainClass>com.example.os_project.gui.HelloApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

@@ -1,0 +1,17 @@
+Test Case: Scenario B (Short-Job-Heavy / Efficiency Test)
+Goal: Prove SJF yields a lower Average Waiting Time when multiple jobs are queued.
+
+System Setup:
+Time Quantum (RR): 3
+
+Process Inputs:
+ID   | Arrival | Burst
+----------------------
+P1   |   0     |  10
+P2   |   0     |  2
+P3   |   0     |  1
+P4   |   0     |  2
+
+Expected Observation:
+Because they all arrive at Time 0, SJF will instantly sort them and execute the shortest jobs first (P3, then P2/P4, leaving P1 for last),
+resulting in a massive reduction in Average Waiting Time compared to Round Robin.

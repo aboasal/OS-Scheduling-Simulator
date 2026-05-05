@@ -1,5 +1,7 @@
-package com.example.os_project;
+package com.example.os_project.gui;
 
+import com.example.os_project.metrics.MetricsCalculator;
+import com.example.os_project.utils.Validator;
 import com.example.os_project.model.GanttRecord;
 import com.example.os_project.model.Process;
 import com.example.os_project.scheduler.RoundRobinScheduler;
@@ -115,14 +117,13 @@ public class HelloApplication extends Application {
             String arr = arrivalInput.getText().trim();
             String burst = burstInput.getText().trim();
 
-            if (id.isEmpty() || arr.isEmpty() || burst.isEmpty()) {
+            if (Validator.isInputEmpty(id, arr, burst)) {
                 showAlert("Error", "All fields required."); return;
             }
-            if (!arr.matches("^\\d+$") || !burst.matches("^[1-9]\\d*$")) {
+            if (!Validator.isValidNumbers(arr, burst)) {
                 showAlert("Error", "Arrival must be >= 0. Burst must be > 0."); return;
             }
-            boolean idExists = masterProcessList.stream().anyMatch(p -> p.id.equalsIgnoreCase(id));
-            if (idExists) {
+            if (Validator.isDuplicateId(masterProcessList, id)) {
                 showAlert("Input Error", "A process with this ID already exists."); return;
             }
 
@@ -208,16 +209,10 @@ public class HelloApplication extends Application {
         sjfResultsList.addAll(sjfClonedList);
 
         // 4. Calculate SJF Averages
-        double totalWt = 0, totalTat = 0, totalRt = 0;
-        for (Process p : sjfClonedList) {
-            totalWt += p.waitingTime;
-            totalTat += p.turnaroundTime;
-            totalRt += p.responseTime;
-        }
-        int n = sjfClonedList.size();
-        sjfAvgWtLabel.setText(String.format("Average WT: %.2f", (totalWt / n)));
-        sjfAvgTatLabel.setText(String.format("Average TAT: %.2f", (totalTat / n)));
-        sjfAvgRtLabel.setText(String.format("Average RT: %.2f", (totalRt / n)));
+
+        sjfAvgWtLabel.setText(String.format("Average WT: %.2f", MetricsCalculator.getAverageWT(sjfClonedList)));
+        sjfAvgTatLabel.setText(String.format("Average TAT: %.2f", MetricsCalculator.getAverageTAT(sjfClonedList)));
+        sjfAvgRtLabel.setText(String.format("Average RT: %.2f", MetricsCalculator.getAverageRT(sjfClonedList)));
 
         // 5. Draw the SJF Gantt Chart
         drawGanttChart(sjfGanttBox, sjfScheduler.ganttChart);
@@ -241,15 +236,10 @@ public class HelloApplication extends Application {
         rrResultsList.addAll(rrClonedList);
 
         // 4. Calculate RR Averages
-        double rrTotalWt = 0, rrTotalTat = 0, rrTotalRt = 0;
-        for (Process p : rrClonedList) {
-            rrTotalWt += p.waitingTime;
-            rrTotalTat += p.turnaroundTime;
-            rrTotalRt += p.responseTime;
-        }
-        rrAvgWtLabel.setText(String.format("Average WT: %.2f", (rrTotalWt / n)));
-        rrAvgTatLabel.setText(String.format("Average TAT: %.2f", (rrTotalTat / n)));
-        rrAvgRtLabel.setText(String.format("Average RT: %.2f", (rrTotalRt / n)));
+
+        rrAvgWtLabel.setText(String.format("Average WT: %.2f", MetricsCalculator.getAverageWT(rrClonedList)));
+        rrAvgTatLabel.setText(String.format("Average TAT: %.2f", MetricsCalculator.getAverageTAT(rrClonedList)));
+        rrAvgRtLabel.setText(String.format("Average RT: %.2f", MetricsCalculator.getAverageRT(rrClonedList)));
 
         // 5. Draw the RR Gantt Chart (reusing our awesome drawing method!)
         drawGanttChart(rrGanttBox, rrScheduler.ganttChart);

@@ -1,0 +1,16 @@
+Test Case: Scenario D (Long-Job Sensitivity / The Convoy Effect)
+Goal: Demonstrate how a long job monopolizes the CPU under Non-Preemptive SJF, and how RR fixes this.
+
+System Setup:
+Time Quantum (RR): 3
+
+Process Inputs:
+ID   | Arrival | Burst
+----------------------
+P1   |   0     |  20
+P2   |   1     |  2
+P3   |   2     |  2
+
+Expected Observation:
+Because SJF is Non-Preemptive, P1 grabs the CPU at Time 0 and refuses to let go. P2 and P3 (which are tiny 2-second jobs) are trapped waiting 20 seconds just to run. 
+Under Round Robin, P1 gets 3 seconds, and then the CPU immediately jumps to P2 and P3 to let them finish, drastically improving their Waiting Time.

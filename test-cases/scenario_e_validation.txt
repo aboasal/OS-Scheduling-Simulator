@@ -1,0 +1,23 @@
+Test Case: Scenario E (Input Validation Test)
+Goal: Ensure the GUI catches user errors and prevents system crashes.
+
+Test Steps:
+1. Empty Fields Test:
+   - Leave "ID" blank.
+   - Click "Add Process".
+   - Expected: System shows "All fields required" error dialog.
+
+2. Negative Arrival Test:
+   - Enter ID: P1, Arrival: -5, Burst: 10.
+   - Click "Add Process".
+   - Expected: System shows "Arrival must be >= 0" error dialog.
+
+3. Invalid Characters Test:
+   - Enter ID: P2, Arrival: A, Burst: 5.
+   - Click "Add Process".
+   - Expected: System shows "Arrival must be >= 0. Burst must be > 0" error dialog.
+
+4. Duplicate ID Test:
+   - Add P1 (Arrival 0, Burst 5).
+   - Try to add P1 again (Arrival 2, Burst 3).
+   - Expected: System shows "A process with this ID already exists" error dialog.
