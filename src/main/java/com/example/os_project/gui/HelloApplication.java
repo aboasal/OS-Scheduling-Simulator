@@ -52,9 +52,10 @@ public class HelloApplication extends Application {
         Tab sjfTab = new Tab("3. SJF Results", buildResultTab("Shortest Job First", sjfResultsList, false));
         // ---> ADD THIS NEW TAB <---
         Tab conclusionTab = new Tab("4. Comparison & Conclusion", buildConclusionTab());
+        Tab analysisTab = new Tab("5. Analysis & Final Comparison", buildAnalysisTab());
 
-        // Update this line to include the 4th tab
-        tabPane.getTabs().addAll(setupTab, rrTab, sjfTab, conclusionTab);
+        // Update this line to include the 4th and 5th tabs
+        tabPane.getTabs().addAll(setupTab, rrTab, sjfTab, conclusionTab, analysisTab);
 
 
         Scene scene = new Scene(tabPane, 850, 650);
@@ -300,15 +301,88 @@ public class HelloApplication extends Application {
         summaryPanel.getChildren().addAll(rrSummary, sjfSummary);
 
         // The Final Conclusion Area
-        Label conclusionTitle = new Label("Final Conclusion Area:");
+        Label conclusionTitle = new Label("Conclusion:");
         conclusionTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
         TextArea conclusionBox = new TextArea();
-        conclusionBox.setPromptText("Write your analysis here. Discuss fairness vs. efficiency, the effect of the quantum, and which algorithm performed better for this workload...");
+        conclusionBox.setText("Metrics:\n" +
+                "• Average Waiting Time: SJF is mostly better, except in case of convoy effect\n" +
+                "• Average Turnaround Time: SJF is mostly better, except in case of convoy effect\n" +
+                "• Average Response Time: RR is better, because it distributes CPU time fairly across processes\n" +
+                "• Fairness: RR is fairer, more balanced than SJF\n" +
+                "• Efficiency: SJF is more efficient in processing short jobs but may delay long ones.\n\n" +
+                "Effect of the selected quantum:\n" +
+                "• If the quantum time is very large, the RR behaves like FCFS and no switches occur.\n" +
+                "• If the quantum time is too small, switching occurs a lot, reducing the efficiency significantly.\n" +
+                "• So, time quantum must be kept moderate.");
+        conclusionBox.setEditable(false);
         conclusionBox.setWrapText(true);
+        conclusionBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 12px;");
         VBox.setVgrow(conclusionBox, Priority.ALWAYS); // Makes the text box stretch to fill the screen
 
         layout.getChildren().addAll(title, summaryPanel, conclusionTitle, conclusionBox);
+        return layout;
+    }
+
+    private VBox buildAnalysisTab() {
+        VBox layout = new VBox(15);
+        layout.setPadding(new Insets(15));
+
+        Label title = new Label("Analysis & Final Comparison");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        // First TextArea - Analysis
+        Label analysisLabel = new Label("Detailed Analysis:");
+        analysisLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+
+        TextArea analysisBox = new TextArea();
+        analysisBox.setText("1. Which algorithm gave lower average waiting time?\n" +
+                "SJF gave the lower average waiting time because it executes short processes first, reducing the time processes spent waiting in the ready queue.\n\n" +
+                "2. Which algorithm gave lower average response time?\n" +
+                "RR gave the lower average response time because every process receives CPU access quickly through time slicing.\n\n" +
+                "3. Did Round Robin appear fairer across all processes?\n" +
+                "Yes. Round Robin appeared fairer because CPU time was distributed equally among processes\n\n" +
+                "4. Did SJF complete short jobs more efficiently?\n" +
+                "Yes. SJF completed short jobs more efficiently by prioritizing processes with the smallest burst time, which reduced waiting and turnaround times.\n\n" +
+                "5. How did the chosen quantum affect Round Robin behavior?\n" +
+                "The Time Quantum strongly affected RR performance:\n" +
+                "  - Large quantum will result in RR behaving similarly to FCFS.\n" +
+                "  - Small quantum will result in more context switching overhead.\n" +
+                "  - Balanced quantum will result in better fairness and responsiveness.\n\n" +
+                "6. Which algorithm would you recommend for the tested workload, and why?\n" +
+                "I would recommend RR in systems where fairness is necessary, and I would recommend SJF in systems where efficiency is needed as mostly the waiting time will be low compared to RR.");
+        analysisBox.setEditable(false);
+        analysisBox.setWrapText(true);
+        analysisBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 11px;");
+        analysisBox.setPrefHeight(200);
+        VBox.setVgrow(analysisBox, Priority.ALWAYS);
+
+        // Second TextArea - Final Comparison
+        Label comparisonLabel = new Label("Final Comparison:");
+        comparisonLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+
+        TextArea comparisonBox = new TextArea();
+        comparisonBox.setText("1. Fairness vs Efficiency:\n" +
+                "  - Round Robin provides better fairness for the process than the SJF as it divides the CPU time fairly across the processes\n" +
+                "  - SJF produced better efficiency as shown in scenario B\n\n" +
+                "2. Effect of Time Quantum on Round Robin:\n" +
+                "  - If the quantum time is very large, the RR behaves like FCFS and no switches occur.\n" +
+                "  - If the quantum time is too small, switching occurs a lot, reducing the efficiency significantly.\n" +
+                "  - So, time quantum must be kept moderate.\n\n" +
+                "3. Effect on Response Time and Long Processes:\n" +
+                "  - In RR, long jobs receives CPU access regularly and every process gets quick response time.\n" +
+                "  - In SJF, long jobs can wait long time before accessing the cpu, but short jobs has very fast response time.\n\n" +
+                "4. How Round Robin Distributes CPU Time:\n" +
+                "  - Round Robin distributes CPU time equally in a circular queue as shown in the gantt charts.\n\n" +
+                "5. How SJF Favors Short Jobs:\n" +
+                "  - SJF always executes the smallest available burst first as shown in the gantt charts.");
+        comparisonBox.setEditable(false);
+        comparisonBox.setWrapText(true);
+        comparisonBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 11px;");
+        comparisonBox.setPrefHeight(200);
+        VBox.setVgrow(comparisonBox, Priority.ALWAYS);
+
+        layout.getChildren().addAll(title, analysisLabel, analysisBox, comparisonLabel, comparisonBox);
         return layout;
     }
 
