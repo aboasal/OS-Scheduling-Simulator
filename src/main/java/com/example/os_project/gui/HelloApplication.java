@@ -5,7 +5,7 @@ import com.example.os_project.utils.Validator;
 import com.example.os_project.model.GanttRecord;
 import com.example.os_project.model.Process;
 import com.example.os_project.scheduler.RoundRobinScheduler;
-import com.example.os_project.scheduler.SJFScheduler; // Imports your new engine!
+import com.example.os_project.scheduler.SJFScheduler;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -33,7 +33,6 @@ public class HelloApplication extends Application {
     private HBox sjfGanttBox;
     private TextField quantumInput;
 
-    // --- NEW: Global labels so we can update the text after math runs ---
     private Label rrAvgWtLabel = new Label("Average WT: 0.0");
     private Label rrAvgTatLabel = new Label("Average TAT: 0.0");
     private Label rrAvgRtLabel = new Label("Average RT: 0.0");
@@ -50,21 +49,55 @@ public class HelloApplication extends Application {
         Tab setupTab = new Tab("1. Input & Setup", buildSetupTab());
         Tab rrTab = new Tab("2. Round Robin Results", buildResultTab("Round Robin", rrResultsList, true));
         Tab sjfTab = new Tab("3. SJF Results", buildResultTab("Shortest Job First", sjfResultsList, false));
-        // ---> ADD THIS NEW TAB <---
         Tab conclusionTab = new Tab("4. Comparison & Conclusion", buildConclusionTab());
         Tab analysisTab = new Tab("5. Analysis & Final Comparison", buildAnalysisTab());
 
-        // Update this line to include the 4th and 5th tabs
         tabPane.getTabs().addAll(setupTab, rrTab, sjfTab, conclusionTab, analysisTab);
 
-
-        Scene scene = new Scene(tabPane, 850, 650);
+        Scene scene = new Scene(tabPane, 850, 700); // Slightly increased height for the new buttons
         stage.setTitle("Round Robin vs SJF Simulator");
         stage.setScene(scene);
         stage.show();
     }
 
     private VBox buildSetupTab() {
+        // --- NEW: PRESET TEST CASE BUTTONS ---
+        HBox presetBox = new HBox(10);
+        presetBox.setPadding(new Insets(10));
+        presetBox.setAlignment(Pos.CENTER_LEFT);
+
+        Label presetLabel = new Label("Load Test Case:");
+        presetLabel.setStyle("-fx-font-weight: bold;");
+
+        Button btnA = new Button("Scenario A (Mixed)");
+        Button btnB = new Button("Scenario B (Efficiency)");
+        Button btnC = new Button("Scenario C (Fairness)");
+        Button btnD = new Button("Scenario D (Convoy)");
+        Button btnClear = new Button("Clear All");
+        btnClear.setStyle("-fx-text-fill: red;");
+
+        // Wire up the preset buttons
+        btnA.setOnAction(e -> loadPreset(4,
+                new Process("P1", 0, 5), new Process("P2", 1, 8), new Process("P3", 3, 2), new Process("P4", 5, 6)));
+
+        btnB.setOnAction(e -> loadPreset(3,
+                new Process("P1", 0, 10), new Process("P2", 0, 2), new Process("P3", 0, 1), new Process("P4", 0, 2)));
+
+        btnC.setOnAction(e -> loadPreset(2,
+                new Process("P1", 0, 6), new Process("P2", 0, 6), new Process("P3", 0, 6)));
+
+        btnD.setOnAction(e -> loadPreset(3,
+                new Process("P1", 0, 20), new Process("P2", 1, 2), new Process("P3", 2, 2)));
+
+        btnClear.setOnAction(e -> {
+            masterProcessList.clear();
+            quantumInput.clear();
+            readyQueueLogArea.clear();
+        });
+
+        presetBox.getChildren().addAll(presetLabel, btnA, btnB, btnC, btnD, btnClear);
+        // -------------------------------------
+
         HBox quantumBox = new HBox(10);
         quantumBox.setPadding(new Insets(10));
         Label quantumLabel = new Label("Time Quantum (RR):");
@@ -92,7 +125,6 @@ public class HelloApplication extends Application {
         processTable.getColumns().addAll(idCol, arrCol, burstCol);
         processTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // --- UPDATED READY QUEUE VIEW ---
         VBox queueSection = new VBox(5);
         queueSection.setPadding(new Insets(10));
         Label queueLabel = new Label("Ready Queue View (RR History Snapshot):");
@@ -100,10 +132,7 @@ public class HelloApplication extends Application {
 
         readyQueueLogArea = new TextArea();
         readyQueueLogArea.setEditable(false);
-        // 1. Give it more vertical space (changed from 100 to 250)
         readyQueueLogArea.setPrefHeight(250);
-
-        // 2. Make the font bigger and use a clean, monospaced font so the columns line up nicely
         readyQueueLogArea.setStyle("-fx-font-size: 16px; -fx-font-family: 'Consolas'; -fx-padding: 10;");
         readyQueueLogArea.setPromptText("Queue history will appear here after running...");
 
@@ -135,9 +164,18 @@ public class HelloApplication extends Application {
         runButton.setOnAction(e -> runSchedulingAlgorithms());
 
         VBox root = new VBox(10);
-        root.setPadding(new Insets(15));
-        root.getChildren().addAll(quantumBox, inputBox, processTable, queueSection, runButton);
+        root.setPadding(new Insets(10));
+        // ADDED presetBox TO THE TOP OF THE UI
+        root.getChildren().addAll(presetBox, quantumBox, inputBox, processTable, queueSection, runButton);
         return root;
+    }
+
+    // --- NEW HELPER METHOD FOR PRESET BUTTONS ---
+    private void loadPreset(int quantum, Process... processes) {
+        masterProcessList.clear();
+        quantumInput.setText(String.valueOf(quantum));
+        masterProcessList.addAll(processes);
+        readyQueueLogArea.clear();
     }
 
     private VBox buildResultTab(String title, ObservableList<Process> resultData, boolean isRR) {
@@ -174,7 +212,6 @@ public class HelloApplication extends Application {
         resultTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         HBox averagesBox = new HBox(20);
-        // Add the correct global labels based on which tab this is
         if (isRR) {
             averagesBox.getChildren().addAll(rrAvgWtLabel, rrAvgTatLabel, rrAvgRtLabel);
         } else {
@@ -185,7 +222,6 @@ public class HelloApplication extends Application {
         return layout;
     }
 
-    // --- UPDATED: THE SIMULATION TRIGGER ---
     private void runSchedulingAlgorithms() {
         if (masterProcessList.isEmpty()) {
             showAlert("Error", "Please add at least one process."); return;
@@ -195,63 +231,43 @@ public class HelloApplication extends Application {
         }
         int quantum = Integer.parseInt(quantumInput.getText().trim());
 
-        // 1. Create a DEEP COPY of the processes for SJF so we don't mess up the RR data
         List<Process> sjfClonedList = new ArrayList<>();
         for (Process p : masterProcessList) {
             sjfClonedList.add(new Process(p.id, p.arrivalTime, p.burstTime));
         }
 
-        // 2. Run the SJF Math!
         SJFScheduler sjfScheduler = new SJFScheduler();
         sjfScheduler.runSJF(sjfClonedList);
 
-        // 3. Update the SJF Table Data
         sjfResultsList.clear();
         sjfResultsList.addAll(sjfClonedList);
-
-        // 4. Calculate SJF Averages
 
         sjfAvgWtLabel.setText(String.format("Average WT: %.2f", MetricsCalculator.getAverageWT(sjfClonedList)));
         sjfAvgTatLabel.setText(String.format("Average TAT: %.2f", MetricsCalculator.getAverageTAT(sjfClonedList)));
         sjfAvgRtLabel.setText(String.format("Average RT: %.2f", MetricsCalculator.getAverageRT(sjfClonedList)));
 
-        // 5. Draw the SJF Gantt Chart
         drawGanttChart(sjfGanttBox, sjfScheduler.ganttChart);
 
-        System.out.println("SJF Simulation Complete!");
-        // We will add the RR code here next!
-        // --- NEW: RUN THE ROUND ROBIN MATH ---
-
-        // 1. Create ANOTHER deep copy of the original data for RR
         List<Process> rrClonedList = new ArrayList<>();
         for (Process p : masterProcessList) {
             rrClonedList.add(new Process(p.id, p.arrivalTime, p.burstTime));
         }
 
-        // 2. Run the RR Engine
         RoundRobinScheduler rrScheduler = new RoundRobinScheduler();
-        rrScheduler.runRoundRobin(rrClonedList, quantum); // Pass the quantum here!
+        rrScheduler.runRoundRobin(rrClonedList, quantum);
 
-        // 3. Update the RR Table Data
         rrResultsList.clear();
         rrResultsList.addAll(rrClonedList);
-
-        // 4. Calculate RR Averages
 
         rrAvgWtLabel.setText(String.format("Average WT: %.2f", MetricsCalculator.getAverageWT(rrClonedList)));
         rrAvgTatLabel.setText(String.format("Average TAT: %.2f", MetricsCalculator.getAverageTAT(rrClonedList)));
         rrAvgRtLabel.setText(String.format("Average RT: %.2f", MetricsCalculator.getAverageRT(rrClonedList)));
 
-        // 5. Draw the RR Gantt Chart (reusing our awesome drawing method!)
         drawGanttChart(rrGanttBox, rrScheduler.ganttChart);
 
-        System.out.println("Round Robin Simulation Complete!");
-
-        // Show the queue log on the screen!
         readyQueueLogArea.setText(rrScheduler.queueLog.toString());
     }
 
-    // --- NEW: GANTT CHART DRAWING METHOD ---
     private void drawGanttChart(HBox ganttBox, List<GanttRecord> chartData) {
         ganttBox.getChildren().clear();
 
@@ -260,7 +276,6 @@ public class HelloApplication extends Application {
             block.setAlignment(Pos.CENTER);
             block.setPadding(new Insets(5));
 
-            // If it's IDLE time, make it gray. Otherwise, make it blue.
             if (record.processId.equals("IDLE")) {
                 block.setStyle("-fx-border-color: black; -fx-background-color: #d3d3d3; -fx-min-width: 40px;");
             } else {
@@ -276,7 +291,7 @@ public class HelloApplication extends Application {
             ganttBox.getChildren().add(block);
         }
     }
-    // --- 4. BUILDS THE FINAL CONCLUSION TAB ---
+
     private VBox buildConclusionTab() {
         VBox layout = new VBox(15);
         layout.setPadding(new Insets(15));
@@ -284,7 +299,6 @@ public class HelloApplication extends Application {
         Label title = new Label("Comparison Summary Panel");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // The Side-by-Side Summary Panel
         HBox summaryPanel = new HBox(50);
         summaryPanel.setStyle("-fx-border-color: gray; -fx-padding: 15; -fx-background-color: #f8f9fa;");
 
@@ -300,7 +314,6 @@ public class HelloApplication extends Application {
 
         summaryPanel.getChildren().addAll(rrSummary, sjfSummary);
 
-        // The Final Conclusion Area
         Label conclusionTitle = new Label("Conclusion:");
         conclusionTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
@@ -317,8 +330,9 @@ public class HelloApplication extends Application {
                 "• So, time quantum must be kept moderate.");
         conclusionBox.setEditable(false);
         conclusionBox.setWrapText(true);
-        conclusionBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 12px;");
-        VBox.setVgrow(conclusionBox, Priority.ALWAYS); // Makes the text box stretch to fill the screen
+        // CHANGED FONT SIZE TO 14px
+        conclusionBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 14px;");
+        VBox.setVgrow(conclusionBox, Priority.ALWAYS);
 
         layout.getChildren().addAll(title, summaryPanel, conclusionTitle, conclusionBox);
         return layout;
@@ -331,9 +345,8 @@ public class HelloApplication extends Application {
         Label title = new Label("Analysis & Final Comparison");
         title.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // First TextArea - Analysis
         Label analysisLabel = new Label("Detailed Analysis:");
-        analysisLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        analysisLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
         TextArea analysisBox = new TextArea();
         analysisBox.setText("1. Which algorithm gave lower average waiting time?\n" +
@@ -353,13 +366,13 @@ public class HelloApplication extends Application {
                 "I would recommend RR in systems where fairness is necessary, and I would recommend SJF in systems where efficiency is needed as mostly the waiting time will be low compared to RR.");
         analysisBox.setEditable(false);
         analysisBox.setWrapText(true);
-        analysisBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 11px;");
+        // CHANGED FONT SIZE TO 14px
+        analysisBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 14px;");
         analysisBox.setPrefHeight(200);
         VBox.setVgrow(analysisBox, Priority.ALWAYS);
 
-        // Second TextArea - Final Comparison
         Label comparisonLabel = new Label("Final Comparison:");
-        comparisonLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        comparisonLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
         TextArea comparisonBox = new TextArea();
         comparisonBox.setText("1. Fairness vs Efficiency:\n" +
@@ -378,7 +391,8 @@ public class HelloApplication extends Application {
                 "  - SJF always executes the smallest available burst first as shown in the gantt charts.");
         comparisonBox.setEditable(false);
         comparisonBox.setWrapText(true);
-        comparisonBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 11px;");
+        // CHANGED FONT SIZE TO 14px
+        comparisonBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 14px;");
         comparisonBox.setPrefHeight(200);
         VBox.setVgrow(comparisonBox, Priority.ALWAYS);
 

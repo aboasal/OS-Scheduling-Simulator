@@ -1,5 +1,12 @@
 # 🖥️ CPU Scheduling Simulator: Round Robin vs SJF
 
+## 👥 Team Members
+* **[فارس اسماعيل عبدالمعطي غانم]**
+* **[احمد محمود يوسف ابو عسل]**
+* **[إبراهيم أحمد محمد عبدالسلام]** 
+* **[عمر مصطفي الحسيني شاهين]** 
+* **[عمر محمد صلاح الدين عبدالغفار]**
+* **[احمد ربيع سعودي بدر]**
 ## 📖 Project Overview
 This project is a JavaFX-based graphical simulator designed to compare the performance and behavior of two fundamental Operating System CPU scheduling algorithms: **Round Robin (RR)** and **Non-Preemptive Shortest Job First (SJF)**.
 
