@@ -11,7 +11,6 @@ public class Process {
     public int turnaroundTime;
     public int waitingTime;
 
-    // New variables required by your updated algorithms
     public boolean isComplete;
     public boolean inQueue;
 
@@ -23,7 +22,7 @@ public class Process {
         this.burstTime = brst;
         this.burstTimeRemaining = brst;
 
-        // Defaults
+
         this.waitingTime = 0;
         this.turnaroundTime = 0;
         this.responseTime = -1;

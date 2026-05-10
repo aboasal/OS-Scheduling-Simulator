@@ -61,7 +61,7 @@ public class HelloApplication extends Application {
     }
 
     private VBox buildSetupTab() {
-        // --- NEW: PRESET TEST CASE BUTTONS ---
+
         HBox presetBox = new HBox(10);
         presetBox.setPadding(new Insets(10));
         presetBox.setAlignment(Pos.CENTER_LEFT);
@@ -76,7 +76,7 @@ public class HelloApplication extends Application {
         Button btnClear = new Button("Clear All");
         btnClear.setStyle("-fx-text-fill: red;");
 
-        // Wire up the preset buttons
+
         btnA.setOnAction(e -> loadPreset(4,
                 new Process("P1", 0, 5), new Process("P2", 1, 8), new Process("P3", 3, 2), new Process("P4", 5, 6)));
 
@@ -96,7 +96,7 @@ public class HelloApplication extends Application {
         });
 
         presetBox.getChildren().addAll(presetLabel, btnA, btnB, btnC, btnD, btnClear);
-        // -------------------------------------
+
 
         HBox quantumBox = new HBox(10);
         quantumBox.setPadding(new Insets(10));
@@ -170,7 +170,7 @@ public class HelloApplication extends Application {
         return root;
     }
 
-    // --- NEW HELPER METHOD FOR PRESET BUTTONS ---
+
     private void loadPreset(int quantum, Process... processes) {
         masterProcessList.clear();
         quantumInput.setText(String.valueOf(quantum));
@@ -391,7 +391,7 @@ public class HelloApplication extends Application {
                 "  - SJF always executes the smallest available burst first as shown in the gantt charts.");
         comparisonBox.setEditable(false);
         comparisonBox.setWrapText(true);
-        // CHANGED FONT SIZE TO 14px
+
         comparisonBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 14px;");
         comparisonBox.setPrefHeight(200);
         VBox.setVgrow(comparisonBox, Priority.ALWAYS);
