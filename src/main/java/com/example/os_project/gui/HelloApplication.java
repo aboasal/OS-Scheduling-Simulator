@@ -165,7 +165,7 @@ public class HelloApplication extends Application {
 
         VBox root = new VBox(10);
         root.setPadding(new Insets(10));
-        // ADDED presetBox TO THE TOP OF THE UI
+
         root.getChildren().addAll(presetBox, quantumBox, inputBox, processTable, queueSection, runButton);
         return root;
     }
@@ -330,7 +330,7 @@ public class HelloApplication extends Application {
                 "• So, time quantum must be kept moderate.");
         conclusionBox.setEditable(false);
         conclusionBox.setWrapText(true);
-        // CHANGED FONT SIZE TO 14px
+
         conclusionBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 14px;");
         VBox.setVgrow(conclusionBox, Priority.ALWAYS);
 
@@ -366,7 +366,7 @@ public class HelloApplication extends Application {
                 "I would recommend RR in systems where fairness is necessary, and I would recommend SJF in systems where efficiency is needed as mostly the waiting time will be low compared to RR.");
         analysisBox.setEditable(false);
         analysisBox.setWrapText(true);
-        // CHANGED FONT SIZE TO 14px
+
         analysisBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 14px;");
         analysisBox.setPrefHeight(200);
         VBox.setVgrow(analysisBox, Priority.ALWAYS);
