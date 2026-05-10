@@ -28,7 +28,7 @@ public class SJFScheduler {
         processes.get(i).firstStartedTime = currentTime;
         processes.get(i).responseTime = currentTime - processes.get(i).arrivalTime;
 
-        // UI Integration: Log the Gantt block
+
         ganttChart.add(new GanttRecord(processes.get(i).id, currentTime, currentTime + processes.get(i).burstTime));
 
         processes.get(i).isComplete = true;
@@ -51,7 +51,7 @@ public class SJFScheduler {
 
         processes.sort((p1, p2) -> Integer.compare(p1.arrivalTime, p2.arrivalTime));
 
-        // Priority Queue sorted by burst time as requested
+
         Queue<Integer> readyQueue = new PriorityQueue<>((i1, i2) -> {
             return Integer.compare(processes.get(i1).burstTime, processes.get(i2).burstTime);
         });

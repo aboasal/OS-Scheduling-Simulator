@@ -61,7 +61,7 @@ public class HelloApplication extends Application {
     }
 
     private VBox buildSetupTab() {
-        // --- NEW: PRESET TEST CASE BUTTONS ---
+
         HBox presetBox = new HBox(10);
         presetBox.setPadding(new Insets(10));
         presetBox.setAlignment(Pos.CENTER_LEFT);
@@ -76,7 +76,7 @@ public class HelloApplication extends Application {
         Button btnClear = new Button("Clear All");
         btnClear.setStyle("-fx-text-fill: red;");
 
-        // Wire up the preset buttons
+
         btnA.setOnAction(e -> loadPreset(4,
                 new Process("P1", 0, 5), new Process("P2", 1, 8), new Process("P3", 3, 2), new Process("P4", 5, 6)));
 
@@ -96,7 +96,7 @@ public class HelloApplication extends Application {
         });
 
         presetBox.getChildren().addAll(presetLabel, btnA, btnB, btnC, btnD, btnClear);
-        // -------------------------------------
+
 
         HBox quantumBox = new HBox(10);
         quantumBox.setPadding(new Insets(10));
@@ -165,12 +165,12 @@ public class HelloApplication extends Application {
 
         VBox root = new VBox(10);
         root.setPadding(new Insets(10));
-        // ADDED presetBox TO THE TOP OF THE UI
+
         root.getChildren().addAll(presetBox, quantumBox, inputBox, processTable, queueSection, runButton);
         return root;
     }
 
-    // --- NEW HELPER METHOD FOR PRESET BUTTONS ---
+
     private void loadPreset(int quantum, Process... processes) {
         masterProcessList.clear();
         quantumInput.setText(String.valueOf(quantum));
@@ -330,7 +330,7 @@ public class HelloApplication extends Application {
                 "• So, time quantum must be kept moderate.");
         conclusionBox.setEditable(false);
         conclusionBox.setWrapText(true);
-        // CHANGED FONT SIZE TO 14px
+
         conclusionBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 14px;");
         VBox.setVgrow(conclusionBox, Priority.ALWAYS);
 
@@ -366,7 +366,7 @@ public class HelloApplication extends Application {
                 "I would recommend RR in systems where fairness is necessary, and I would recommend SJF in systems where efficiency is needed as mostly the waiting time will be low compared to RR.");
         analysisBox.setEditable(false);
         analysisBox.setWrapText(true);
-        // CHANGED FONT SIZE TO 14px
+
         analysisBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 14px;");
         analysisBox.setPrefHeight(200);
         VBox.setVgrow(analysisBox, Priority.ALWAYS);
@@ -391,7 +391,7 @@ public class HelloApplication extends Application {
                 "  - SJF always executes the smallest available burst first as shown in the gantt charts.");
         comparisonBox.setEditable(false);
         comparisonBox.setWrapText(true);
-        // CHANGED FONT SIZE TO 14px
+
         comparisonBox.setStyle("-fx-control-inner-background: #f5f5f5; -fx-font-size: 14px;");
         comparisonBox.setPrefHeight(200);
         VBox.setVgrow(comparisonBox, Priority.ALWAYS);

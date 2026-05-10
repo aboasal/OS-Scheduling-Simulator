@@ -26,7 +26,7 @@ public class RoundRobinScheduler {
     public int[] updateQueue(List<Process> processes, int n, int quantum, Queue<Integer> readyQueue, int currentTime, int programsExecuted) {
         int i = readyQueue.remove();
 
-        // Track for Response Time
+
         if (processes.get(i).responseTime == -1) {
             processes.get(i).firstStartedTime = currentTime;
             processes.get(i).responseTime = currentTime - processes.get(i).arrivalTime;
@@ -34,7 +34,7 @@ public class RoundRobinScheduler {
 
         int timeToRun = Math.min(processes.get(i).burstTimeRemaining, quantum);
 
-        // UI Integration: Log the Gantt block
+
         ganttChart.add(new GanttRecord(processes.get(i).id, currentTime, currentTime + timeToRun));
 
         if (processes.get(i).burstTimeRemaining <= quantum) {
@@ -65,7 +65,7 @@ public class RoundRobinScheduler {
     public void runRoundRobin(List<Process> processes, int quantum) {
         int n = processes.size();
 
-        // Sort initial processes by arrival time to ensure correct initial queueing
+
         processes.sort((p1, p2) -> Integer.compare(p1.arrivalTime, p2.arrivalTime));
 
         Queue<Integer> readyQueue = new LinkedList<>();
@@ -73,7 +73,7 @@ public class RoundRobinScheduler {
         int currentTime = 0;
         int programsExecuted = 0;
 
-        // Ensure processes that arrive at time 0 are added
+
         checkForNewArrivals(processes, n, currentTime, readyQueue);
 
         while (programsExecuted < n) {
@@ -84,7 +84,7 @@ public class RoundRobinScheduler {
                 continue;
             }
 
-            // UI Integration: Snapshot the queue history log
+
             queueLog.append("Time ").append(currentTime).append(": [ ");
             for (Integer index : readyQueue) {
                 Process p = processes.get(index);
